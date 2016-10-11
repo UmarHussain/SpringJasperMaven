@@ -4,26 +4,32 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 
 public class JasperInputForm {
-	@NotEmpty
-	private String noofYears;
-	private String rptFmt="Html";
+    @NotEmpty
+    private String noofYears;
+    private String rptFmt = "Html";
 
-	
-	public String getRptFmt() {
-		return rptFmt;
-	}
 
-	public void setRptFmt(String rptFmt) {
-		this.rptFmt = rptFmt;
-	}
+    public String getRptFmt() {
+        return rptFmt;
+    }
 
-	public String getNoofYears() {
-		return noofYears;
-	}
+    public void setRptFmt(String rptFmt) {
+        this.rptFmt = rptFmt;
+    }
 
-	public void setNoofYears(String noofYears) {
-		this.noofYears = noofYears;
-	}
+    public String getNoofYears() {
+        return noofYears;
+    }
 
-	
-	}
+    public void setNoofYears(String noofYears) {
+        this.noofYears = noofYears;
+    }
+
+    @Override
+    public String toString() {
+        return "JasperInputForm{" +
+                "noofYears='" + noofYears + '\'' +
+                ", rptFmt='" + rptFmt + '\'' +
+                '}';
+    }
+}

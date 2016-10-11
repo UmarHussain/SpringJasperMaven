@@ -41,97 +41,104 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class LoadJasperReport {
 
-	@ModelAttribute("jasperRptFormats")
-	public ArrayList getJasperRptFormats() {
-		ArrayList<String> jasperRptFormats = new ArrayList<String>();
-		jasperRptFormats.add("Html");
-		jasperRptFormats.add("PDF");
+    @ModelAttribute("jasperRptFormats")
+    public ArrayList getJasperRptFormats() {
+        ArrayList<String> jasperRptFormats = new ArrayList<String>();
+        jasperRptFormats.add("HTML");
+        jasperRptFormats.add("PDF");
+        jasperRptFormats.add("CSV");
 
-		return jasperRptFormats;
-	}
+        return jasperRptFormats;
+    }
 
-	@RequestMapping(value = "/loadJasper", method = RequestMethod.GET)
-	public String loadSurveyPg(
-			@ModelAttribute("jasperInputForm") JasperInputForm jasperInputForm,
-			Model model) {
-		model.addAttribute("JasperInputForm", jasperInputForm);
+    @RequestMapping(value = "/loadJasper", method = RequestMethod.GET)
+    public String loadSurveyPg(
+            @ModelAttribute("jasperInputForm") JasperInputForm jasperInputForm,
+            Model model) {
+        model.addAttribute("JasperInputForm", jasperInputForm);
 
-		return "loadJasper";
-	}
+        return "loadJasper";
+    }
 
-	@RequestMapping(value = "/generateReport", method = RequestMethod.POST)
-	public String generateReport(
-			@Valid @ModelAttribute("jasperInputForm") JasperInputForm jasperInputForm,
-			BindingResult result, Model model, HttpServletRequest request,
-			HttpServletResponse response) throws JRException, IOException,
-			NamingException {
+    @RequestMapping(value = "/generateReport", method = RequestMethod.POST)
+    public String generateReport(
+            @Valid @ModelAttribute("jasperInputForm") JasperInputForm jasperInputForm,
+            BindingResult result, Model model, HttpServletRequest request,
+            HttpServletResponse response) throws JRException, IOException,
+            NamingException {
 
-		if (result.hasErrors()) {
-			System.out.println("validation error occured in jasper input form");
-			return "loadJasper";
+        if (result.hasErrors()) {
+            System.out.println("validation error occured in jasper input form");
+            return "loadJasper";
 
-		}
+        }
 
-		String reportFileName = "JREmp1";
-		JasperReportDAO jrdao = new JasperReportDAO();
+        String reportFileName = "JREmp1";
+        JasperReportDAO jrdao = new JasperReportDAO();
 
-		Connection conn = null;
+        Connection conn = null;
 
-		try {
-			conn = jrdao.getConnection();
+        try {
+            conn = jrdao.getConnection();
 
-			String rptFormat = jasperInputForm.getRptFmt();
-			String noy = jasperInputForm.getNoofYears();
+            String rptFormat = jasperInputForm.getRptFmt();
+            String noy = jasperInputForm.getNoofYears();
 
-			System.out.println("rpt format " + rptFormat);
-			System.out.println("no of years " + noy);
+            System.out.println("rpt format " + rptFormat);
+            System.out.println("no of years " + noy);
 
-			HashMap<String, Object> hmParams = new HashMap<String, Object>();
+            HashMap<String, Object> hmParams = new HashMap<String, Object>();
 
-			hmParams.put("noy", new Integer(noy));
+            hmParams.put("noy", new Integer(noy));
 
-			hmParams.put("Title", "Employees working more than " + noy
-					+ " Years");
+            hmParams.put("Title", "Employees working more than " + noy
+                    + " Years");
 
-			JasperReport jasperReport = jrdao.getCompiledFile(reportFileName,
-					request);
+            JasperReport jasperReport = jrdao.getCompiledFile(reportFileName,
+                    request);
 
-			if (rptFormat.equalsIgnoreCase("html")) {
+            if (rptFormat.equalsIgnoreCase("html")) {
 
-				JasperPrint jasperPrint = JasperFillManager.fillReport(
-						jasperReport, hmParams, conn);
-				jrdao.generateReportHtml(jasperPrint, request, response); // For
-																			// HTML
-																			// report
+                JasperPrint jasperPrint = JasperFillManager.fillReport(
+                        jasperReport, hmParams, conn);
+                jrdao.generateReportHtml(jasperPrint, request, response); // For
+                // HTML
+                // report
 
-			}
+            } else if (rptFormat.equalsIgnoreCase("csv")) {
 
-			else if (rptFormat.equalsIgnoreCase("pdf")) {
+                JasperPrint jasperPrint = JasperFillManager.fillReport(
+                        jasperReport, hmParams, conn);
+                jrdao.generateReportCsv2(jasperPrint, response, "csv");
+            } else if (rptFormat.equalsIgnoreCase("pdf")) {
 
-				jrdao.generateReportPDF(response, hmParams, jasperReport, conn); // For
-																					// PDF
-																					// report
+                jrdao.generateReportPDF(response, hmParams, jasperReport, conn); // For
+                // PDF
+                // report
 
-			}
+            }
 
-		} catch (SQLException sqlExp) {
-			System.out.println("Exception::" + sqlExp.toString());
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
-			}
+        } catch (Exception Exp) {
 
-		}
+            System.out.println("Exception::" + Exp.toString());
 
-		return null;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
-	}
+            }
+
+        }
+
+        return null;
+
+    }
 
 }
