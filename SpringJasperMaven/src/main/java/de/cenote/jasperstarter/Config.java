@@ -113,7 +113,7 @@ public class Config {
      *
      *
      */
-    Config() {
+    public Config() {
         String jasperStarterVersion = "";
         String jasperStarterRevision = "";
         jasperStarterVersion = this.getClass().getPackage().getSpecificationVersion();

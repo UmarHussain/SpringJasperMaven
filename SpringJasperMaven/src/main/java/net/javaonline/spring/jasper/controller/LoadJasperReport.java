@@ -99,8 +99,7 @@ public class LoadJasperReport {
 
             if (rptFormat.equalsIgnoreCase("html")) {
 
-                JasperPrint jasperPrint = JasperFillManager.fillReport(
-                        jasperReport, hmParams, conn);
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, hmParams, conn);
                 jrdao.generateReportHtml(jasperPrint, request, response); // For
                 // HTML
                 // report

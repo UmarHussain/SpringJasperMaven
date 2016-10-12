@@ -44,10 +44,13 @@ import javax.print.attribute.HashPrintServiceAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.Copies;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -387,16 +390,6 @@ public class Report {
                 exporter.exportReport();
         }
 
-        public void webExportCsv(Config config,JasperPrint jasperPrint,String filename) throws JRException {
-                JRCsvExporter exporter = new JRCsvExporter();
-                SimpleCsvExporterConfiguration configuration = new SimpleCsvExporterConfiguration();
-                configuration.setFieldDelimiter(config.getOutFieldDel());
-                exporter.setConfiguration(configuration);
-                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                exporter.setExporterOutput(new SimpleWriterExporterOutput(
-                        filename, config.getOutCharset()));
-                exporter.exportReport();
-        }
 
         // the CSV Metadata Exporter
         public void exportCsvMeta() throws JRException {
